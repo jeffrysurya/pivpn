@@ -12,7 +12,7 @@
 
 
 ######## VARIABLES #########
-pivpnGitUrl="https://github.com/pivpn/pivpn.git"
+pivpnGitUrl="https://github.com/jeffrysurya/pivpn.git"
 #pivpnGitUrl="/home/pi/repos/pivpn"
 setupVarsFile="setupVars.conf"
 setupConfigDir="/etc/pivpn"
