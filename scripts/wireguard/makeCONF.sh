@@ -87,10 +87,20 @@ echo "::: Client Keys generated"
 for i in {2..254}; do
     if ! grep -q " $i$" configs/clients.txt; then
         COUNT="$i"
-        echo "${CLIENT_NAME} $(<keys/${CLIENT_NAME}_pub) $(date +%s) ${COUNT}" >> configs/clients.txt
         break
     fi
 done
+
+if [ "${COUNT}" ]; then
+    read -r -p "Enter a IP for client : " -e -i "$COUNT" COUNT
+fi
+
+if ! [[ "${COUNT}" =~ ^[0-9]+$ ]]; then
+    echo "Must be integers."
+    exit 1
+else
+    echo "${CLIENT_NAME} $(<keys/${CLIENT_NAME}_pub) $(date +%s) ${COUNT}" >> configs/clients.txt
+fi
 
 NET_REDUCED="${pivpnNET::-2}"
 
@@ -104,13 +114,15 @@ if [ -n "${pivpnDNS2}" ]; then
 else
     echo >> "configs/${CLIENT_NAME}.conf"
 fi
+echo "MTU = 1420" >> "configs/${CLIENT_NAME}.conf"
 echo >> "configs/${CLIENT_NAME}.conf"
 
 echo "[Peer]
 PublicKey = $(cat keys/server_pub)
 PresharedKey = $(cat "keys/${CLIENT_NAME}_psk")
 Endpoint = ${pivpnHOST}:${pivpnPORT}
-AllowedIPs = ${ALLOWED_IPS}" >> "configs/${CLIENT_NAME}.conf"
+AllowedIPs = ${ALLOWED_IPS} 
+PersistentKeepalive = 25" >> "configs/${CLIENT_NAME}.conf"
 echo "::: Client config generated"
 
 echo "### begin ${CLIENT_NAME} ###
@@ -136,6 +148,7 @@ else
     echo "::: Failed to reload WireGuard"
 fi
 
+qrencode -s 8 -m 4 -d 144 -t png --output=configs/${CLIENT_NAME}.png <configs/${CLIENT_NAME}.conf
 cp "configs/${CLIENT_NAME}.conf" "${install_home}/configs/${CLIENT_NAME}.conf"
 chown "${install_user}":"${install_user}" "${install_home}/configs/${CLIENT_NAME}.conf"
 chmod 640 "${install_home}/configs/${CLIENT_NAME}.conf"
