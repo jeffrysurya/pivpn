@@ -52,19 +52,9 @@ even more conveniently.
 Installation
 -----------------
 
-**Method 1**
-```Shell
-curl -L https://install.pivpn.io | bash
-```
-
-**Method 2 (direct link)**
-```Shell
-curl https://raw.githubusercontent.com/pivpn/pivpn/master/auto_install/install.sh | bash
-```
-
 **Method 3 (clone repo)**
 ```Shell
-git clone https://github.com/pivpn/pivpn.git
+git clone https://github.com/jeffrysurya/pivpn.git
 bash pivpn/auto_install/install.sh
 ```
 
